@@ -1,0 +1,35 @@
+.sidebar {
+    width: 110px;
+    min-height: 100vh;
+}
+
+.sidebar .nav-link {
+    color: #fff;
+    text-align: center;
+    padding: 12px 4px;
+    font-size: 0.85rem;
+}
+
+.sidebar .nav-link i {
+    display: block;
+    font-size: 1.8rem;
+    margin-bottom: 4px;
+}
+
+.sidebar .nav-link.active,
+.sidebar .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+.foto-barbero {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.foto-barbero-lg {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+}
