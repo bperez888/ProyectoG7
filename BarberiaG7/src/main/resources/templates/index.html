@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body class="bg-secondary-subtle">
+        <main class="container min-vh-100 d-flex flex-column justify-content-center align-items-center">
+            <i class="fa-solid fa-scissors fa-3x mb-3"></i>
+            <h1 class="display-4 fw-bold mb-4">[[#{aplicacion.titulo}]]</h1>
+            <div class="d-flex gap-4">
+                <a th:href="@{/login}" class="btn btn-light border border-dark btn-lg fw-semibold px-4">[[#{index.iniciarSesion}]]</a>
+                <a th:href="@{/registro/nuevo}" class="btn btn-light border border-dark btn-lg fw-semibold px-4">[[#{index.registrarse}]]</a>
+            </div>
+        </main>
+    </body>
+</html>
