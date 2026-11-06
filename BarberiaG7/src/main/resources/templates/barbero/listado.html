@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarAdmin('barberos')}"></aside>
+            <main class="flex-grow-1">
+                <section th:replace="~{barbero/fragmentos :: formulario}"></section>
+                <section th:replace="~{barbero/fragmentos :: listado}"></section>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+        <section th:replace="~{general/fragmentos :: confirmarEliminar(@{/barbero/eliminar},'idBarbero')}"></section>
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+        <script th:src="@{/js/modulos/barbero.js}"></script>
+    </body>
+</html>
