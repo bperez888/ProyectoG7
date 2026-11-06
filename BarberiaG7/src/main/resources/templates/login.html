@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body class="bg-secondary-subtle">
+        <main class="container min-vh-100 d-flex justify-content-center align-items-center">
+            <div class="card shadow-sm" style="max-width: 420px; width: 100%;">
+                <div class="card-body p-4">
+                    <h3 class="text-center fw-bold mb-4">[[#{login.titulo}]]</h3>
+                    <form>
+                        <div class="mb-3">
+                            <label for="correo" class="form-label">[[#{login.correo}]]</label>
+                            <input type="email" id="correo" class="form-control" disabled/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contrasena" class="form-label">[[#{login.contrasena}]]</label>
+                            <input type="password" id="contrasena" class="form-control" disabled/>
+                        </div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-light border border-dark px-4" disabled>[[#{login.boton}]]</button>
+                        </div>
+                    </form>
+                    <div class="alert alert-info small mt-4 mb-3">
+                        <i class="fa-solid fa-circle-info"></i> [[#{login.aviso}]]
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a th:href="@{/cliente/servicios}" class="btn btn-warning fw-semibold">
+                            <i class="fa-solid fa-user"></i> [[#{login.cliente}]]</a>
+                        <a th:href="@{/admin/dashboard}" class="btn btn-dark fw-semibold">
+                            <i class="fa-solid fa-user-gear"></i> [[#{login.admin}]]</a>
+                    </div>
+                    <p class="text-center small mt-3 mb-0">
+                        <a th:href="@{/registro/nuevo}">[[#{login.sinCuenta}]]</a>
+                    </p>
+                </div>
+            </div>
+        </main>
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+    </body>
+</html>
