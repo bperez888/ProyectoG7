@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarCliente('citas')}"></aside>
+            <main class="flex-grow-1 p-4">
+                <p class="text-muted small mb-1">[[#{plantilla.misCitas}]] / [[#{cita.resumen}]]</p>
+                <div class="card bg-light shadow-sm mx-auto" style="max-width: 560px;">
+                    <div class="card-body text-center fs-5">
+                        <h4 class="fw-bold mb-3">[[#{cita.resumen}]]:</h4>
+                        <p class="mb-2">[[#{cita.cliente}]]: [[${cita.cliente.nombre + ' ' + cita.cliente.apellidos}]]</p>
+                        <p class="mb-2">[[#{plantilla.servicios}]]: [[${cita.servicio.nombre}]]</p>
+                        <p class="mb-2">[[#{cita.barbero}]]: [[${cita.barbero.nombre}]]</p>
+                        <p class="mb-2">[[#{cita.fecha}]]: [[${cita.fecha}]]</p>
+                        <p class="mb-2">[[#{cita.hora}]]: [[${cita.horaInicio}]] - [[${cita.horaFin}]]</p>
+                        <p class="mb-0">[[#{cita.estado}]]: <span th:replace="~{general/fragmentos :: estadoBadge(${cita.estadoCita.nombre})}"></span></p>
+                    </div>
+                    <div class="card-footer bg-light d-flex justify-content-between">
+                        <a th:href="@{/cliente/servicios}" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-comment-dots"></i> [[#{plantilla.servicios}]]</a>
+                        <a th:href="@{/cliente/citas(correo=${cita.cliente.correo})}" class="btn btn-warning btn-sm fw-semibold">
+                            <i class="fa-solid fa-calendar-check"></i> [[#{plantilla.misCitas}]]</a>
+                    </div>
+                </div>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+    </body>
+</html>
