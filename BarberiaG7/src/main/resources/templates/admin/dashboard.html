@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarAdmin('dashboard')}"></aside>
+            <main class="flex-grow-1 p-4">
+                <p class="text-muted small mb-1">[[#{plantilla.panelAdmin}]]</p>
+                <h3 class="mb-4">[[#{dashboard.titulo}]]</h3>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-lg-3">
+                        <div class="card text-center text-bg-dark"><div class="card-body">
+                            <h6>[[#{cita.delDia}]]</h6><h3 class="mb-0"><i class="fa-solid fa-calendar-day"></i> [[${totalCitasHoy}]]</h3>
+                        </div></div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="card text-center text-bg-warning"><div class="card-body">
+                            <h6>[[#{barbero.total}]]</h6><h3 class="mb-0"><i class="fa-solid fa-user"></i> [[${totalBarberos}]]</h3>
+                        </div></div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="card text-center text-bg-success"><div class="card-body">
+                            <h6>[[#{servicio.total}]]</h6><h3 class="mb-0"><i class="fa-solid fa-scissors"></i> [[${totalServicios}]]</h3>
+                        </div></div>
+                    </div>
+                    <div class="col-6 col-lg-3">
+                        <div class="card text-center text-bg-primary"><div class="card-body">
+                            <h6>[[#{usuario.total}]]</h6><h3 class="mb-0"><i class="fa-solid fa-users"></i> [[${totalClientes}]]</h3>
+                        </div></div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fa-solid fa-calendar-day"></i> [[#{cita.delDia}]]</h5>
+                                <span class="text-muted">[[${hoy}]]</span>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-striped table-hover align-middle" th:if="${!citasHoy.empty}">
+                                    <thead><tr>
+                                            <th>[[#{cita.hora}]]</th>
+                                            <th>[[#{cita.barbero}]]</th>
+                                            <th>[[#{cita.cliente}]]</th>
+                                            <th>[[#{plantilla.servicios}]]</th>
+                                            <th>[[#{cita.estado}]]</th>
+                                        </tr></thead>
+                                    <tbody>
+                                        <tr th:each="c : ${citasHoy}">
+                                            <td>[[${c.horaInicio}]] - [[${c.horaFin}]]</td>
+                                            <td>[[${c.barbero.nombre}]]</td>
+                                            <td>[[${c.cliente.nombre + ' ' + c.cliente.apellidos}]]</td>
+                                            <td>[[${c.servicio.nombre}]]</td>
+                                            <td><span th:replace="~{general/fragmentos :: estadoBadge(${c.estadoCita.nombre})}"></span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center p-2" th:if="${citasHoy.empty}">[[#{cita.sinCitas}]]</div>
+                            </div>
+                            <div class="card-footer bg-white text-end">
+                                <a th:href="@{/cita/listado(fecha=${hoy})}" class="btn btn-dark btn-sm">
+                                    <i class="fa-solid fa-arrow-right"></i> [[#{cita.gestion}]]</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header"><h5 class="mb-0"><i class="fa-solid fa-clock"></i> [[#{cita.proximas}]]</h5></div>
+                            <ul class="list-group list-group-flush" th:if="${!proximas.empty}">
+                                <li th:each="c : ${proximas}" class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <div class="fw-semibold">[[${c.horaInicio}]] · [[${c.fecha}]]</div>
+                                        <small class="text-muted">[[${c.cliente.nombre + ' ' + c.cliente.apellidos}]] · [[${c.barbero.nombre}]]</small>
+                                    </div>
+                                    <span th:replace="~{general/fragmentos :: estadoBadge(${c.estadoCita.nombre})}"></span>
+                                </li>
+                            </ul>
+                            <div class="card-body text-center" th:if="${proximas.empty}">[[#{cita.sinCitas}]]</div>
+                        </div>
+                    </div>
+                </div>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+    </body>
+</html>
+
