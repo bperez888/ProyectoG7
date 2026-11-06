@@ -1,4 +1,4 @@
-package BarberiaG7.Barberia;
+package com.Barberia;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
