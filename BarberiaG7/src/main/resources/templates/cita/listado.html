@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarAdmin('citas')}"></aside>
+            <main class="flex-grow-1">
+                <div class="row py-4 mb-2 bg-light mx-0 align-items-end">
+                    <div class="col-md-5 px-4">
+                        <h3 class="mb-0">[[#{cita.gestion}]]</h3>
+                    </div>
+
+                    <div class="col-md-7 px-4">
+                        <form method="get" th:action="@{/cita/listado}" class="row g-2 justify-content-md-end align-items-end">
+                            <div class="col-auto">
+                                <label for="fecha" class="form-label small mb-0">[[#{cita.filtrar}]]</label>
+                                <input type="date" id="fecha" name="fecha" class="form-control" th:value="${fecha}" required/>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-dark"><i class="fa-solid fa-magnifying-glass"></i> [[#{accion.buscar}]]</button>
+                            </div>
+                            <div class="col-auto" th:if="${fecha != null}">
+                                <a th:href="@{/cita/listado}" class="btn btn-outline-dark">[[#{accion.todas}]]</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <section class="p-3">
+                    <div class="row p-3">
+                        <div class="col-md-10">
+                            <div class="card p-2">
+                                <div class="card-header" th:if="${fecha != null}">
+                                    <h5 class="mb-0">[[#{cita.fecha}]]: [[${fecha}]]</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div th:if="${!citas.empty}" class="table-responsive">
+
+                                        <table class="table table-striped table-hover align-middle">
+                                            <thead><tr>
+                                                    <th>[[#{cita.cliente}]]</th>
+                                                    <th>[[#{cita.servicio}]]</th>
+                                                    <th>[[#{cita.barbero}]]</th>
+                                                    <th>[[#{cita.fechaHora}]]</th>
+                                                    <th>[[#{cita.estado}]]</th>
+                                                    <th>[[#{cita.cambiarEstado}]]</th>
+                                                </tr></thead>
+                                            <tbody>
+                                                <tr th:each="c : ${citas}">
+                                                    <td>
+                                                        <button type="button" class="btn btn-link p-0 text-decoration-none"
+                                                                data-bs-toggle="modal" data-bs-target="#clienteModal"
+                                                                th:data-nombre="${c.cliente.nombre + ' ' + c.cliente.apellidos}"
+                                                                th:data-correo="${c.cliente.correo}"
+                                                                th:data-telefono="${c.cliente.telefono}">
+                                                            <i class="fa-solid fa-circle-user"></i> [[${c.cliente.nombre + ' ' + c.cliente.apellidos}]]
+                                                        </button>
+                                                    </td>
+                                                    <td>[[${c.servicio.nombre}]]</td>
+                                                    <td>[[${c.barbero.nombre}]]</td>
+                                                    <td>[[${c.fecha}]]<br/>
+                                                        <small>[[${c.horaInicio}]]</small></td>
+                                                    <td><span th:replace="~{general/fragmentos :: estadoBadge(${c.estadoCita.nombre})}"></span></td>
+                                                    <td>
+
+                                                        <form method="post" th:action="@{/cita/estado}" class="d-flex gap-1">
+                                                            <input type="hidden" name="idCita" th:value="${c.idCita}"/>
+                                                            <input type="hidden" name="fecha" th:value="${fecha}"/>
+                                                            <select name="idEstadoCita" class="form-select form-select-sm" style="min-width: 130px;">
+                                                                <option th:each="e : ${estados}" th:value="${e.idEstadoCita}"
+                                                                        th:selected="${e.idEstadoCita == c.estadoCita.idEstadoCita}">[[${e.nombre}]]</option>
+                                                            </select>
+                                                            <button type="submit" class="btn btn-success btn-sm" th:title="#{accion.guardar}">
+                                                                <i class="fa-solid fa-floppy-disk"></i></button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-center p-2" th:if="${citas.empty}">[[#{cita.sinCitas}]]</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="card text-center bg-success text-white mb-3">
+                                <div class="card-body"><h5>[[#{cita.total}]]</h5>
+                                    <h4 class="fs-2"><i class="fas fa-clipboard-list"></i> [[${totalCitas}]]</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+
+        <div class="modal fade" id="clienteModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-dark text-white">
+                        <h5 class="modal-title"><i class="fa-solid fa-circle-user"></i> [[#{cita.datosCliente}]]</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>[[#{usuario.nombre}]]:</strong> <span id="clienteNombre"></span></p>
+                        <p><strong>[[#{usuario.correo}]]:</strong> <span id="clienteCorreo"></span></p>
+                        <p class="mb-0"><strong>[[#{usuario.telefono}]]:</strong> <span id="clienteTelefono"></span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+        <script th:src="@{/js/modulos/cita.js}"></script>
+    </body>
+</html>

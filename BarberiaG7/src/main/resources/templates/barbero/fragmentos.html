@@ -1,0 +1,140 @@
+<section th:fragment="formulario">
+    <div class="row py-4 mb-2 bg-light mx-0">
+        <div class="col-md-6 px-4">
+            <h3 class="mb-0">[[#{barbero.titulo}]]</h3>
+        </div>
+        <div class="col-md-6 px-4 text-md-end">
+            <button type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#barberoModal"
+                    data-modo="agregar"
+                    th:data-titulo="#{barbero.agregar}">
+                <i class="fa-solid fa-plus"></i>
+                [[#{barbero.agregar}]]
+            </button>
+        </div>
+    </div>
+    <div class="modal fade" id="barberoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="barberoForm" method="post" th:action="@{/barbero/guardar}">
+                    <div class="modal-header" id="barberoModalHeader">
+                        <h5 class="modal-title" id="barberoModalTitulo"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" id="barberoId" name="idBarbero"/>
+                        <div class="mb-3">
+                            <label for="barberoNombre">[[#{barbero.nombre}]]</label>
+                            <input type="text" id="barberoNombre" name="nombre" class="form-control" maxlength="75" required/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="barberoTelefono">[[#{barbero.telefono}]]</label>
+                            <input type="tel" id="barberoTelefono" name="telefono" class="form-control" maxlength="25"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="barberoFoto">[[#{barbero.foto}]]</label>
+                            <input type="url" id="barberoFoto" name="foto" class="form-control" maxlength="1024"/>
+                            <img id="barberoPreview" class="d-none mt-2 rounded-circle foto-barbero-lg" alt="Foto del barbero"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="d-block mb-1">[[#{barbero.servicios}]]</label>
+                            <div class="form-check form-check-inline" th:each="s : ${servicios}">
+                                <input class="form-check-input servicio-check" type="checkbox" name="idServicios"
+                                       th:id="'barberoServicio' + ${s.idServicio}" th:value="${s.idServicio}"/>
+                                <label class="form-check-label" th:for="'barberoServicio' + ${s.idServicio}">[[${s.nombre}]]</label>
+                            </div>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" id="barberoActivo" name="activo" class="form-check-input"/>
+                            <input type="hidden" name="_activo" value="on"/>
+                            <label for="barberoActivo" class="form-check-label">[[#{barbero.activo}]]</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-xmark"></i> [[#{accion.cerrar}]]
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-floppy-disk"></i> [[#{accion.guardar}]]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section th:fragment="listado" class="p-3">
+    <div class="row p-3">
+        <div class="col-md-9">
+            <div class="card p-2">
+                <div class="card-body">
+                    <div th:if="${barberos != null and !barberos.empty}" class="table-responsive">
+                        <table class="table table-striped table-hover align-middle">
+                            <thead><tr>
+                                    <th>[[#{barbero.nombre}]]</th>
+                                    <th>[[#{barbero.telefono}]]</th>
+                                    <th>[[#{barbero.especialidad}]]</th>
+                                    <th>[[#{barbero.horarios}]]</th>
+                                    <th>[[#{barbero.estatus}]]</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="b : ${barberos}">
+                                    <td class="text-nowrap">
+                                        <img th:if="${b.foto != null}" th:src="${b.foto}" th:alt="${b.nombre}" class="rounded-circle foto-barbero me-2"/>
+                                        <i th:if="${b.foto == null}" class="fa-solid fa-circle-user fa-2x text-secondary align-middle me-2"></i>
+                                        [[${b.nombre}]]
+                                    </td>
+                                    <td>[[${b.telefono}]]</td>
+                                    <td>
+                                        <div th:each="s : ${b.servicios}">[[${s.nombre}]]</div>
+                                    </td>
+                                    <td class="small">
+                                        <div th:each="h : ${b.horarios}"><span th:replace="~{general/fragmentos :: nombreDia(${h.diaSemana})}"></span> [[${h.horaInicio}]]-[[${h.horaFin}]]</div>
+                                        <span th:if="${b.horarios.empty}" class="text-muted">[[#{barbero.sinHorario}]]</span>
+                                    </td>
+                                    <td><span class="badge" th:classappend="${b.activo} ? 'text-bg-success' : 'text-bg-secondary'"
+                                              th:text="${b.activo} ? #{estado.activo} : #{estado.inactivo}"></span></td>
+                                    <td class="text-nowrap">
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#barberoModal"
+                                                data-modo="editar" th:data-titulo="#{accion.actualizar}" th:data-id="${b.idBarbero}"
+                                                th:data-nombre="${b.nombre}" th:data-telefono="${b.telefono}"
+                                                th:data-foto="${b.foto != null ? b.foto : ''}" th:data-activo="${b.activo}">
+                                            <span th:each="s : ${b.servicios}" class="servicio-id d-none" th:text="${s.idServicio}"></span>
+                                            <i class="fas fa-pencil-alt"></i> [[#{accion.actualizar}]]
+                                        </button>
+                                        <form method="post" th:action="@{/barbero/estado}" class="d-inline">
+                                            <input type="hidden" name="idBarbero" th:value="${b.idBarbero}"/>
+                                            <button type="submit" class="btn btn-sm" th:classappend="${b.activo} ? 'btn-outline-secondary' : 'btn-outline-success'">
+                                                <i class="fa-solid" th:classappend="${b.activo} ? 'fa-user-slash' : 'fa-user-check'"></i>
+                                                [[${b.activo} ? #{barbero.desactivar} : #{barbero.activar}]]
+                                            </button>
+                                        </form>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal"
+                                                th:data-bs-id="${b.idBarbero}" th:data-bs-descripcion="${b.nombre}">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center p-2" th:if="${barberos == null or barberos.empty}">
+                        <span>[[#{lista.vacia}]]</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center bg-success text-white mb-3">
+                <div class="card-body"><h3>[[#{barbero.total}]]</h3>
+                    <h4 class="fs-2"><i class="fas fa-user"></i> [[${totalBarberos}]]</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
