@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarCliente('servicios')}"></aside>
+            <main class="flex-grow-1 p-4">
+                <p class="text-muted small mb-1">[[#{cita.reservacion}]]</p>
+                <div class="card bg-light shadow-sm mx-auto" style="max-width: 640px;">
+                    <div class="card-body text-center">
+                        <h4 th:text="${servicio.nombre}">Servicio</h4>
+                        <p class="fw-semibold mb-3">[[#{cita.barbero}]]: [[${barbero.nombre}]]</p>
+
+                        <form method="get" th:action="@{/cliente/reservar/{s}/{b}(s=${servicio.idServicio},b=${barbero.idBarbero})}"
+                              class="row g-2 justify-content-center align-items-end mb-3">
+                            <div class="col-auto">
+                                <label for="fecha" class="form-label fw-semibold">[[#{cita.seleccioneFecha}]]</label>
+                                <input type="date" id="fecha" name="fecha" class="form-control"
+                                       th:min="${hoy}" th:value="${fecha}" required/>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-dark">
+                                    <i class="fa-solid fa-magnifying-glass"></i> [[#{accion.buscar}]]</button>
+                            </div>
+                        </form>
+
+                        <div th:if="${fecha != null}">
+                            <hr/>
+                            <h6 class="fw-bold">[[#{cita.horasDisponibles}]] - [[${fecha}]]</h6>
+                            <div class="alert alert-secondary" th:if="${horas.empty}">[[#{cita.sinHoras}]]</div>
+                            <form th:if="${!horas.empty}" method="post" th:action="@{/cliente/reservar/confirmar}">
+                                <input type="hidden" name="idServicio" th:value="${servicio.idServicio}"/>
+                                <input type="hidden" name="idBarbero" th:value="${barbero.idBarbero}"/>
+                                <input type="hidden" name="fecha" th:value="${fecha}"/>
+                                <div class="mb-3 text-start mx-auto" style="max-width: 360px;">
+                                    <label for="hora" class="form-label fw-semibold">[[#{cita.hora}]]</label>
+                                    <select id="hora" name="hora" class="form-select" required>
+                                        <option th:each="h : ${horas}" th:value="${h}">[[${h}]]</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3 text-start mx-auto" style="max-width: 360px;">
+                                    <label for="correo" class="form-label fw-semibold">[[#{cita.correoCliente}]]</label>
+                                    <input type="email" id="correo" name="correo" class="form-control" required/>
+                                </div>
+                                <button type="submit" class="btn btn-warning fw-semibold px-5">[[#{cita.confirmar}]]</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <a th:href="@{/cliente/servicio/{id}(id=${servicio.idServicio})}" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-arrow-left"></i> [[#{accion.regresar}]]</a>
+                    </div>
+                </div>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+    </body>
+</html>

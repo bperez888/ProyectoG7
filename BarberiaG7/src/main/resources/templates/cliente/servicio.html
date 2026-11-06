@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarCliente('servicios')}"></aside>
+            <main class="flex-grow-1 p-4">
+                <p class="text-muted small mb-1">[[#{plantilla.servicios}]] / [[${servicio.nombre}]]</p>
+                <div class="row g-4">
+
+                    <div class="col-lg-4">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-dark text-white"><h5 class="mb-0">[[#{servicio.informacion}]]</h5></div>
+                            <div class="card-body">
+                                <h4 th:text="${servicio.nombre}">Servicio</h4>
+                                <p class="text-muted" th:text="${servicio.descripcion}">Descripción</p>
+                                <p class="mb-1"><strong>[[#{servicio.precio}]]:</strong> [[${#numbers.formatCurrency(servicio.precio)}]]</p>
+                                <p class="mb-0"><strong>[[#{servicio.duracionTexto}]]:</strong> [[${servicio.duracionMinutos}]] [[#{servicio.minutos}]]</p>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <a th:href="@{/cliente/servicios}" class="btn btn-secondary btn-sm">
+                                    <i class="fa-solid fa-arrow-left"></i> [[#{accion.regresar}]]</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8">
+                        <h5 class="mb-3">[[#{servicio.barberos}]]</h5>
+                        <div class="row row-cols-1 row-cols-md-2 g-3" th:if="${!barberos.empty}">
+                            <div th:each="b : ${barberos}" class="col">
+                                <div class="card h-100 bg-light text-center shadow-sm">
+                                    <div class="card-body">
+                                        <img th:if="${b.foto != null}" th:src="${b.foto}" th:alt="${b.nombre}" class="rounded-circle foto-barbero-lg mb-2"/>
+                                        <i th:if="${b.foto == null}" class="fa-solid fa-circle-user fa-5x text-secondary mb-2"></i>
+                                        <h5 class="mb-1" th:text="${servicio.nombre}">Servicio</h5>
+                                        <p class="fw-semibold mb-1">[[#{cita.barbero}]]: [[${b.nombre}]]</p>
+                                        <p class="mb-0">[[#{cita.estado}]]: <span class="badge text-bg-success">[[#{estado.activo}]]</span></p>
+                                    </div>
+                                    <div class="card-footer bg-light border-0 pb-3">
+                                        <a th:href="@{/cliente/reservar/{s}/{b}(s=${servicio.idServicio},b=${b.idBarbero})}"
+                                           class="btn btn-warning fw-semibold px-5">[[#{accion.seleccionar}]]</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="alert alert-secondary" th:if="${barberos.empty}">[[#{servicio.sinBarberos}]]</div>
+                    </div>
+                </div>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+    </body>
+</html>

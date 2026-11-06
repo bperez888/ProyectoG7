@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="~{general/fragmentos :: head}"></head>
+    <body>
+        <div class="d-flex">
+            <aside th:replace="~{general/fragmentos :: sidebarCliente('servicios')}"></aside>
+            <main class="flex-grow-1 p-4">
+                <p class="text-muted small mb-1">[[#{plantilla.panelCliente}]] / [[#{plantilla.servicios}]]</p>
+                <h3 class="mb-4">[[#{servicio.disponibles}]]</h3>
+
+                <div th:if="${servicios != null and !servicios.empty}"
+                     class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                    <div th:each="s : ${servicios}" class="col">
+                        <div class="card h-100 shadow-sm text-center">
+                            <div class="card-header bg-white">
+                                <h5 class="card-title mb-0" th:text="${s.nombre}">Servicio</h5>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center bg-light" style="height: 150px;">
+                                <i class="fa-solid fa-scissors fa-4x text-secondary"></i>
+                            </div>
+                            <div class="card-body">
+                                <p class="fw-semibold mb-1">[[#{servicio.precio}]]: [[${#numbers.formatCurrency(s.precio)}]]</p>
+                                <p class="fw-semibold mb-0">[[#{servicio.duracionTexto}]]: [[${s.duracionMinutos}]] [[#{servicio.minutos}]]</p>
+                            </div>
+                            <div class="card-footer bg-white">
+                                <a th:href="@{/cliente/servicio/{id}(id=${s.idServicio})}" class="btn btn-warning fw-semibold px-4">
+                                    [[#{accion.seleccionar}]]</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert alert-secondary" th:if="${servicios == null or servicios.empty}">[[#{lista.vacia}]]</div>
+                <footer th:replace="~{general/fragmentos :: footer}"></footer>
+            </main>
+        </div>
+        <section th:replace="~{general/fragmentos :: mostrarToast}"></section>
+    </body>
+</html>
